@@ -1,0 +1,9 @@
+﻿<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /admin/
+
+  # Redirect all requests for /admin/* to the admin/index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
