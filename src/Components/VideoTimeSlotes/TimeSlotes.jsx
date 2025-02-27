@@ -11,7 +11,7 @@ import {
   Skeleton,
   theme,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { GET } from "../../Controllers/ApiControllers";
@@ -37,20 +37,26 @@ export default function VideoTimeSlotes({ doctorID }) {
 
   // get
   const getDoctorTimeSlotes = async () => {
-    const res = await GET(admin.token, `get_doctor_video_time_slots/${doctorID}`);
-    const rearrangedArray = res?.data.map((slotes) => {
-      const { day, time_start, time_end, time_duration , id } = slotes;
-      return {
-        id,
-        day,
-        time_start,
-        time_end,
-        time_duration,
-      };
-    });
-    return rearrangedArray;
+    try {
+      const res = await GET(
+        admin.token,
+        `get_doctor_video_time_slots/${doctorID}`
+      );
+      const rearrangedArray = res?.data.map((slotes) => {
+        const { day, time_start, time_end, time_duration, id } = slotes;
+        return {
+          id,
+          day,
+          time_start,
+          time_end,
+          time_duration,
+        };
+      });
+      return rearrangedArray;
+    } catch (error) {
+      return [];
+    }
   };
-
 
   const { data: timeSlotes } = useQuery({
     queryKey: ["video-slotes", doctorID],
@@ -103,7 +109,7 @@ export default function VideoTimeSlotes({ doctorID }) {
         onClose={onClose}
         doctorID={doctorID}
       />
- 
+
       {DeleteisOpen && (
         <DeleteTimeSlots
           isOpen={DeleteisOpen}

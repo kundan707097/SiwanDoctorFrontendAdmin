@@ -85,7 +85,7 @@ const LinkItems = [
 
   // { name: "Family-Members", icon: MdFamilyRestroom, permission: "FAMILY_VIEW" },
 
-  // { name: "Coupons", icon: RiCoupon2Fill, permission: "COUPON_VIEW" },
+  { name: "Coupons", icon: RiCoupon2Fill, permission: "COUPON_VIEW" },
   // { name: "Doctor-Reviews", icon: BsBookmarkStar, permission: "REVIEW_VIEW" },
   // {
   //   name: "Notification",

@@ -162,29 +162,6 @@ export default function Doctors() {
         </Box>
       ) : (
         <Box>
-          <Flex mb={5} justify={"space-between"} align={"center"}>
-            <Input
-              size={"md"}
-              placeholder="Search"
-              w={400}
-              maxW={"50vw"}
-              onChange={(e) => {
-                setsearchTerm(e.target.value);
-              }}
-            />
-            <Box>
-              <Button
-                isDisabled={!hasPermission("DOCTOR_ADD")}
-                size={"sm"}
-                colorScheme="blue"
-                onClick={() => {
-                  navigate("/doctors/add");
-                }}
-              >
-                Add New
-              </Button>
-            </Box>
-          </Flex>
           <DynamicTable
             data={filterData(data, searchTerm)}
             onActionClick={

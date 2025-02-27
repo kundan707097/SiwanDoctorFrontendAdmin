@@ -44,7 +44,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { ComboboxDemo } from "../../Components/ComboBox";
 import { MultiTagInput } from "../../Components/MultiTaginput";
-import { ADD, GET, UPDATE } from "../../Controllers/ApiControllers";
+import { ADD, GET, UPDATE, UPLOAD } from "../../Controllers/ApiControllers";
 import {
   default as ShowToast,
   default as showToast,
@@ -144,12 +144,13 @@ export default function UpdateDoctor() {
   };
 
   const handleFileUpload = async (image) => {
+    console.log(image);
     try {
       setisLoading(true);
-      const res = await ADD(admin.token, "update_doctor", {
-        id: param.id,
+      const res = await UPLOAD(admin.token, `update_doctor_image?id=${param.id}`, {
         image: image,
       });
+      console.log(res);
       setisLoading(false);
       if (res.response === 200) {
         ShowToast(toast, "success", "Doctor Updated!");
@@ -158,6 +159,7 @@ export default function UpdateDoctor() {
         ShowToast(toast, "error", res.message);
       }
     } catch (error) {
+      console.log(error);
       setisLoading(false);
       ShowToast(toast, "error", JSON.stringify(error));
     }
@@ -207,7 +209,7 @@ export default function UpdateDoctor() {
         </Heading>
         <Button
           w={120}
-          size={"sm"}
+          size={"md"}
           variant={useColorModeValue("blackButton", "gray")}
           onClick={() => {
             navigate(-1);
@@ -233,7 +235,7 @@ export default function UpdateDoctor() {
                   <CardBody p={3} as={"form"}>
                     <Flex align={"center"} justify={"space-between"}>
                       {" "}
-                      <Heading as={"h3"} size={"sm"}>
+                      <Heading as={"h3"} size={"md"}>
                         Basic Details -
                       </Heading>{" "}
                       <Flex gap={2}>
@@ -242,12 +244,12 @@ export default function UpdateDoctor() {
                           <RatingStars
                             rating={doctorDetails?.average_rating}
                           />{" "}
-                          <Text fontSize={"sm"} fontWeight={600}>
+                          <Text fontsize={"md"} fontWeight={600}>
                             {" "}
                             ( {doctorDetails?.number_of_reviews}) ,
                           </Text>
                         </Flex>
-                        <Text fontSize={"sm"} fontWeight={600}>
+                        <Text fontsize={"md"} fontWeight={600}>
                           {" "}
                           {doctorDetails?.total_appointment_done} Appointments
                           Done
@@ -261,7 +263,7 @@ export default function UpdateDoctor() {
                       <FormControl isRequired>
                         <FormLabel>First Name</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           placeholder="First Name"
                           {...register("f_name", { required: true })}
@@ -272,7 +274,7 @@ export default function UpdateDoctor() {
                       <FormControl isRequired>
                         <FormLabel>Last Name</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           placeholder="Last Name"
                           {...register("l_name", { required: true })}
@@ -289,7 +291,7 @@ export default function UpdateDoctor() {
                           <FormLabel
                             htmlFor="email-alerts"
                             mb="0"
-                            fontSize={"sm"}
+                            fontsize={"md"}
                           >
                             Doctor Active ?
                           </FormLabel>
@@ -310,7 +312,7 @@ export default function UpdateDoctor() {
                           <FormLabel
                             htmlFor="email-alerts"
                             mb="0"
-                            fontSize={"sm"}
+                            fontsize={"md"}
                           >
                             Stop Booking ?
                           </FormLabel>
@@ -330,7 +332,7 @@ export default function UpdateDoctor() {
                         <FormLabel>Date Of Birth</FormLabel>
                         <Input
                           max={todayDate()}
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           placeholder="Select Date"
                           type="date"
@@ -341,7 +343,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>Gender</FormLabel>
                         <Select
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           placeholder="Select Gender"
                           {...register("gender", { required: false })}
@@ -355,7 +357,7 @@ export default function UpdateDoctor() {
                       <FormControl isRequired>
                         <FormLabel>Years OF Experience</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="number"
                           placeholder="Years OF Experience"
@@ -370,7 +372,7 @@ export default function UpdateDoctor() {
                   <CardBody p={3} as={"form"}>
                     <Flex align={"center"} justify={"space-between"}>
                       {" "}
-                      <Heading as={"h3"} size={"sm"}>
+                      <Heading as={"h3"} size={"md"}>
                         Contact Details -
                       </Heading>{" "}
                     </Flex>
@@ -381,7 +383,7 @@ export default function UpdateDoctor() {
                       <FormControl isRequired>
                         <FormLabel>Email</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="email"
                           placeholder="Email"
@@ -392,7 +394,7 @@ export default function UpdateDoctor() {
 
                       <FormControl mt={0} isRequired>
                         <FormLabel>Phone </FormLabel>
-                        <InputGroup size={"sm"}>
+                        <InputGroup size={"md"}>
                           <InputLeftAddon
                             cursor={"pointer"}
                             onClick={(e) => {
@@ -415,7 +417,7 @@ export default function UpdateDoctor() {
                       </FormControl>
                       <FormControl mt={0}>
                         <FormLabel>Secondary Phone</FormLabel>
-                        <InputGroup size={"sm"}>
+                        <InputGroup size={"md"}>
                           <InputLeftAddon
                             cursor={"pointer"}
                             onClick={(e) => {
@@ -443,7 +445,7 @@ export default function UpdateDoctor() {
                   <CardBody p={3} as={"form"}>
                     <Flex align={"center"} justify={"space-between"}>
                       {" "}
-                      <Heading as={"h3"} size={"sm"}>
+                      <Heading as={"h3"} size={"md"}>
                         Education And Other Deta -
                       </Heading>{" "}
                     </Flex>
@@ -461,7 +463,7 @@ export default function UpdateDoctor() {
                         />
                       </FormControl>
 
-                      <FormControl isRequired size={"sm"}>
+                      <FormControl isRequired size={"md"}>
                         <FormLabel>Specialization</FormLabel>
                         <MultiTagInput
                           data={specializationList}
@@ -493,7 +495,7 @@ export default function UpdateDoctor() {
                   <CardBody p={3} as={"form"}>
                     <Flex align={"center"} justify={"space-between"}>
                       {" "}
-                      <Heading as={"h3"} size={"sm"}>
+                      <Heading as={"h3"} size={"md"}>
                         Address -{" "}
                       </Heading>{" "}
                     </Flex>
@@ -503,7 +505,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>State</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="email"
                           placeholder="State"
@@ -515,7 +517,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>City</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="text"
                           placeholder="City"
@@ -526,7 +528,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>Postal Code</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="number"
                           placeholder="Postal Code"
@@ -554,7 +556,7 @@ export default function UpdateDoctor() {
                   <CardBody p={3} as={"form"}>
                     <Flex align={"center"} justify={"space-between"}>
                       {" "}
-                      <Heading as={"h3"} size={"sm"}>
+                      <Heading as={"h3"} size={"md"}>
                         Password -{" "}
                       </Heading>{" "}
                     </Flex>
@@ -564,7 +566,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>Password</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="password"
                           placeholder="Password"
@@ -574,7 +576,7 @@ export default function UpdateDoctor() {
                       <FormControl>
                         <FormLabel>CNF Password</FormLabel>
                         <Input
-                          size={"sm"}
+                          size={"md"}
                           borderRadius={6}
                           type="password"
                           placeholder="Password"
@@ -589,7 +591,7 @@ export default function UpdateDoctor() {
                   mt={10}
                   type="submit"
                   colorScheme="green"
-                  size={"sm"}
+                  size={"md"}
                   isLoading={isLoading}
                 >
                   Update
@@ -604,7 +606,7 @@ export default function UpdateDoctor() {
                   pb={5}
                 >
                   <CardBody p={2}>
-                    <Heading as={"h3"} size={"sm"} textAlign="center">
+                    <Heading as={"h3"} size={"md"} textAlign="center">
                       Profile Picture
                     </Heading>
                     <Divider mt={2} />
@@ -623,7 +625,7 @@ export default function UpdateDoctor() {
                       {doctorDetails?.image && (
                         <Tooltip label="Delete" fontSize="md">
                           <IconButton
-                            size={"sm"}
+                            size={"md"}
                             colorScheme="red"
                             variant={"solid"}
                             position={"absolute"}
@@ -638,7 +640,7 @@ export default function UpdateDoctor() {
                     </Flex>
                     <VStack spacing={4} align="stretch" mt={10}>
                       <Input
-                        size={"sm"}
+                        size={"md"}
                         borderRadius={6}
                         type="file"
                         display="none" // Hide the actual file input
@@ -647,7 +649,7 @@ export default function UpdateDoctor() {
                         accept=".jpeg, .svg, .png , .jpg"
                       />
                       <Button
-                        size={"sm"}
+                        size={"md"}
                         onClick={() => {
                           inputRef.current.click();
                         }}
@@ -666,7 +668,7 @@ export default function UpdateDoctor() {
                   pb={5}
                 >
                   <CardBody p={2}>
-                    <Heading as={"h3"} size={"sm"}>
+                    <Heading as={"h3"} size={"md"}>
                       Social Accounts -{" "}
                     </Heading>
                     <Divider mt={2} mb={5} />
@@ -815,7 +817,7 @@ export default function UpdateDoctor() {
                   pb={5}
                 >
                   <CardBody p={2}>
-                    <Heading as={"h3"} size={"sm"}>
+                    <Heading as={"h3"} size={"md"}>
                       Fees
                     </Heading>
                     <Divider mt={2} mb={2} />
@@ -823,7 +825,7 @@ export default function UpdateDoctor() {
                     <FormControl>
                       <FormLabel>OPD Fee</FormLabel>
                       <Input
-                        size={"sm"}
+                        size={"md"}
                         borderRadius={6}
                         type="number"
                         placeholder="OPD Fee"
@@ -834,7 +836,7 @@ export default function UpdateDoctor() {
                     <FormControl mt={3}>
                       <FormLabel>Video Fee</FormLabel>
                       <Input
-                        size={"sm"}
+                        size={"md"}
                         borderRadius={6}
                         type="number"
                         placeholder="Video Fee"
@@ -845,7 +847,7 @@ export default function UpdateDoctor() {
                     <FormControl mt={3}>
                       <FormLabel>Emergency Fee</FormLabel>
                       <Input
-                        size={"sm"}
+                        size={"md"}
                         borderRadius={6}
                         type="number"
                         placeholder="Emergency Fee"
@@ -913,7 +915,7 @@ const IsActiveSwitch = ({ id, isActive }) => {
       <Switch
         isDisabled={!hasPermission("DOCTOR_UPDATE")}
         defaultChecked={isActive === 1}
-        size={"sm"}
+        size={"md"}
         onChange={(e) => {
           let active = e.target.checked ? 1 : 0;
 
@@ -955,7 +957,7 @@ const StopBooking = ({ id, isStop_booking }) => {
       <Switch
         isDisabled={!hasPermission("DOCTOR_UPDATE")}
         defaultChecked={isStop_booking === 1}
-        size={"sm"}
+        size={"md"}
         onChange={(e) => {
           let stop_booking = e.target.checked ? 1 : 0;
 

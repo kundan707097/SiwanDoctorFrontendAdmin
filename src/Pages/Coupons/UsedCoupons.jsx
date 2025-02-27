@@ -44,27 +44,31 @@ export default function UsedCoupons() {
   const toast = useToast();
   const id = "Errortoast";
   const getData = async () => {
-    const res = await GET(admin.token, "get_coupon_use");
-    const rearrangedArray = res?.data.map((item) => {
-      const {
-        id,
-        coupon_id,
-        user_id,
-        appointment_id,
-        updated_at,
-        f_name,
-        l_name,
-      } = item;
-      return {
-        id,
-        coupon_id,
-        user_id,
-        user_name: `${f_name} ${l_name}`,
-        appointment_id,
-        updated_at,
-      };
-    });
-    return rearrangedArray;
+    try {
+      const res = await GET(admin.token, "get_coupon_use");
+      const rearrangedArray = res?.data.map((item) => {
+        const {
+          id,
+          coupon_id,
+          user_id,
+          appointment_id,
+          updated_at,
+          f_name,
+          l_name,
+        } = item;
+        return {
+          id,
+          coupon_id,
+          user_id,
+          user_name: `${f_name} ${l_name}`,
+          appointment_id,
+          updated_at,
+        };
+      });
+      return rearrangedArray;
+    } catch (error) {
+      return [];
+    }
   };
 
   const handleActionClick = (rowData) => {

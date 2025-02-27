@@ -21,7 +21,7 @@ const handleSessionExpiration = (error) => {
       message: "Session expired. Please log-in again.",
     };
   }
-  throw error.response.data.title || error.response.data.message;
+  throw error.response.data.title || error.response.data.message || error.message;
 };
 
 const GET = async (token, endPoint) => {
@@ -104,7 +104,7 @@ const UPDATE = async (token, endPoint, data) => {
 
 const DELETE = async (token, endPoint, data) => {
   var config = {
-    method: "delete",
+    method: "post",
     maxBodyLength: Infinity,
     url: `${api}/${endPoint}`,
     headers: {
@@ -125,7 +125,7 @@ const DELETE = async (token, endPoint, data) => {
 
 const UPLOAD = async (token, url, data) => {
   var config = {
-    method: "post",
+    method: "put",
     maxBodyLength: Infinity,
     url: url,
     headers: {

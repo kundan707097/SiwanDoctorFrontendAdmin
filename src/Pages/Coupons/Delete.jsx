@@ -39,6 +39,7 @@ export default function DeleteCoupons({ isOpen, onClose, data }) {
         ShowToast(toast, "error", res.message);
       }
     } catch (error) {
+      console.log(error)
       setisLoading(false);
       ShowToast(toast, "error", JSON.stringify(error));
     }

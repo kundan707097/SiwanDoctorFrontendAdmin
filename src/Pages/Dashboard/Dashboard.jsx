@@ -40,14 +40,14 @@ import AppointmentsCalendar from "./Calender";
 import AddCheckin from "../Checkin/Add";
 
 const getData = async () => {
-  const res = await GET(admin.token, "get_dashboard_count");
+  const res = await GET(admin.token, "get_admin_dashboard_count");
   if (res.response !== 200) {
     throw new Error(res.message);
   }
   return res.data;
 };
 const getDataByDoct = async () => {
-  const res = await GET(admin.token, `get_dashboard_count/doctor/${admin.id}`);
+  const res = await GET(admin.token, `DashBoard/doctor/${admin.id}`);
   if (res.response !== 200) {
     throw new Error(res.message);
   }
