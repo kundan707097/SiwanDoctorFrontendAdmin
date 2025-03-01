@@ -34,7 +34,6 @@ import Pagination from "../../Components/Pagination";
 import DateRangeCalender from "../../Components/DateRangeCalender";
 import moment from "moment";
 import { daysBack } from "../../Controllers/dateConfig";
-import useDebounce from "../../Hooks/UseDebounce";
 
 // Helper function to calculate pagination indices
 const getPageIndices = (currentPage, itemsPerPage) => {
@@ -257,3 +256,21 @@ function AllPrescription() {
 }
 
 export default AllPrescription;
+
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    // Set a timeout to update the debounced value
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    // Cleanup function to clear the timeout if value or delay changes
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]); // Dependency array
+
+  return debouncedValue || "";
+}
