@@ -46,12 +46,12 @@ export default function AppointmentStatusLog() {
   const [page, setPage] = useState(1);
   const boxRef = useRef(null);
   const [searchQuery, setsearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
+
   const [statusFilters, setStatusFilters] = useState([]); // Track status filters
   const { startIndex, endIndex } = getPageIndices(page, 50);
   const { hasPermission } = useHasPermission();
   const queryClient = useQueryClient();
-
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
 
   const [dateRange, setdateRange] = useState({
     startDate: sevenDaysBack,
