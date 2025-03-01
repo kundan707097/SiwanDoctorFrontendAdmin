@@ -20,7 +20,7 @@ import { GET } from "../../../Controllers/ApiControllers";
 import admin from "../../../Controllers/admin";
 import AddSocialMedia from "./Add";
 import UpdateSocialMedia from "./Update";
-import DeleteSocial from "./delete.JSX";
+import DeleteSocial from "./Delete";
 
 export default function SocialMedia({ currentTab, activeTab }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
