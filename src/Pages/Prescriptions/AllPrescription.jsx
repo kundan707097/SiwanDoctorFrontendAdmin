@@ -50,12 +50,12 @@ function AllPrescription() {
   const { hasPermission } = useHasPermission();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
+
   const [dateRange, setDateRange] = useState({
     startDate: sevenDaysBack,
     endDate: today,
   });
-
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const { startIndex, endIndex } = getPageIndices(page, 50); // 10 items per page
 
   const { isOpen, onOpen, onClose } = useDisclosure();
