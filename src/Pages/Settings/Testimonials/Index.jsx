@@ -18,11 +18,11 @@ import useSearchFilter from "../../../Hooks/UseSearchFilter";
 import DynamicTable from "../../../Components/DataTable";
 import { GET } from "../../../Controllers/ApiControllers";
 import admin from "../../../Controllers/admin";
-import DeleteSocial from "./Delete";
 import AddTestimonial from "./Add";
 import UpdateTastimonials from "./Update";
 import useHasPermission from "../../../Hooks/HasPermission";
 import NotAuth from "../../../Components/NotAuth";
+import DeleteTestimonial from "./delete";
 
 export default function Testimonials() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -131,7 +131,7 @@ export default function Testimonials() {
       )}
       <AddTestimonial isOpen={isOpen} onClose={onClose} />
 
-      <DeleteSocial
+      <DeleteTestimonial
         isOpen={DeleteisOpen}
         onClose={DeleteonClose}
         data={SelectedData}
