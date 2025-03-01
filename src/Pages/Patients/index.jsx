@@ -22,7 +22,6 @@ import AddPatients from "./AddPatients";
 import Pagination from "../../Components/Pagination";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
-import useSearchFilter from "../../Hooks/UseSearchFilter";
 import useDebounce from "../../Hooks/UseDebounce";
 
 const ITEMS_PER_PAGE = 50;
