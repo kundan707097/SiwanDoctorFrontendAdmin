@@ -22,7 +22,6 @@ import AddPatients from "./AddPatients";
 import Pagination from "../../Components/Pagination";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
-import useDebounce from "../../Hooks/UseDebounce";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -184,3 +183,21 @@ const YourActionButton = ({ onClick, rowData, navigate }) => {
 };
 
 export default Patients;
+
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    // Set a timeout to update the debounced value
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    // Cleanup function to clear the timeout if value or delay changes
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]); // Dependency array
+
+  return debouncedValue || "";
+}
