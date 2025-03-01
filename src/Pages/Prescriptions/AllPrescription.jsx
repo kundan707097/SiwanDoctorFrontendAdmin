@@ -25,7 +25,6 @@ import { useQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import api from "../../Controllers/api";
-import useDebounce from "../../Hooks/UseDebounce";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
 import { useState, useEffect } from "react";
@@ -35,6 +34,7 @@ import Pagination from "../../Components/Pagination";
 import DateRangeCalender from "../../Components/DateRangeCalender";
 import moment from "moment";
 import { daysBack } from "../../Controllers/dateConfig";
+import useDebounce from "../../Hooks/UseDebounce";
 
 // Helper function to calculate pagination indices
 const getPageIndices = (currentPage, itemsPerPage) => {
