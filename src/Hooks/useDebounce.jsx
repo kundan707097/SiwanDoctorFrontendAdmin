@@ -1,9 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from "react";
 
 // Custom hook for debouncing
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
     // Set a timeout to update the debounced value
     const handler = setTimeout(() => {
