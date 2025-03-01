@@ -183,7 +183,7 @@ export default function Checkin() {
                   colorScheme="blue"
                   onClick={() => {
                     const baseUrl = `${window.location.protocol}//${window.location.host}`;
-                    window.open(`${baseUrl}/admin/queue`, "_blank");
+                    window.open(`${baseUrl}/queue`, "_blank");
                   }}
                   rightIcon={<BiLinkExternal />}
                 >

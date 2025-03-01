@@ -160,7 +160,7 @@ export default function Topbar() {
               <Flex justify={"center"}>
                 <Avatar
                   src={`${imageBaseURL}/${admin.image}`}
-                  fallbackSrc="/admin/profile.png"
+                  fallbackSrc="/profile.png"
                   w={16}
                 />
               </Flex>

@@ -327,7 +327,7 @@ function UserDetails() {
                 src={
                   userDetails?.image
                     ? `${imageBaseURL}/${userDetails?.image}`
-                    : "/admin/profilePicturePlaceholder.png"
+                    : "/profilePicturePlaceholder.png"
                 }
               />
               {userDetails?.image && (

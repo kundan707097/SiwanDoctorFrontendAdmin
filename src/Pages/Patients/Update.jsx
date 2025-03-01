@@ -392,7 +392,7 @@ export default function UpdatePatient() {
                         src={
                           patientDetails?.image
                             ? `${imageBaseURL}/${patientDetails?.image}` // Use profilePicture
-                            : "/admin/profilePicturePlaceholder.png" // Fallback placeholder image
+                            : "/profilePicturePlaceholder.png" // Fallback placeholder image
                         }
                       />
                       {patientDetails?.image && (

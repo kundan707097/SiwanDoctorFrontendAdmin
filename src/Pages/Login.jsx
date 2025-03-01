@@ -131,7 +131,7 @@ export default function Login() {
       <Stack
         minH={"100vh"}
         direction={{ base: "column", md: "row" }}
-        background={"url('/admin/loginbg.png')"}
+        background={"url('/loginbg.png')"}
         backgroundSize={"cover"}
         backgroundPosition={"center"}
       >

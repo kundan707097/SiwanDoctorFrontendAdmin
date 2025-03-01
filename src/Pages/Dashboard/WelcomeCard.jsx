@@ -25,7 +25,7 @@ export default function WelcomeCard({ data }) {
         </Text>
       </Box>
       <Box p={3} pos={"relative"} bg={useColorModeValue("#fff", "gray.900")}>
-        <Image src="/admin/profile.png" w={16} top={"-8"} pos={"absolute"} />
+        <Image src="/profile.png" w={16} top={"-8"} pos={"absolute"} />
         <Heading fontSize={"sm"} mt={6} ml={1}>
           {admin.role.name}
         </Heading>

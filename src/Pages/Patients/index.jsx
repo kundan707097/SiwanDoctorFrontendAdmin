@@ -19,11 +19,11 @@ import DynamicTable from "../../Components/DataTable";
 import { GET } from "../../Controllers/ApiControllers";
 import admin from "../../Controllers/admin";
 import AddPatients from "./AddPatients";
-import useDebounce from "../../Hooks/UseDebounce";
 import Pagination from "../../Components/Pagination";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
 import useSearchFilter from "../../Hooks/UseSearchFilter";
+import useDebounce from "../../Hooks/UseDebounce";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -100,7 +100,6 @@ const Patients = () => {
   const transformedData = transformData(data?.data);
   const totalPage = Math.ceil(data?.totalRecord / ITEMS_PER_PAGE);
   const handleActionClick = (rowData) => setSelectedData(rowData);
-  const { handleSearchChange, filteredData } = useSearchFilter(transformedData);
 
   if (!hasPermission("PATIENT_VIEW")) return <NotAuth />;
 
@@ -116,7 +115,7 @@ const Patients = () => {
               placeholder="Search"
               w={400}
               maxW="50vw"
-              onChange={(e) => handleSearchChange(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             <Button
@@ -131,7 +130,7 @@ const Patients = () => {
           <DynamicTable
             imgLast={true}
             minPad="1px 20px"
-            data={filteredData}
+            data={transformedData}
             onActionClick={
               <YourActionButton
                 onClick={handleActionClick}

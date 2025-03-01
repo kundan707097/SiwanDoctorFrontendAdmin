@@ -43,7 +43,7 @@ export default defineConfig({
   define: {
     'process.env': process.env, // Ensure this is included
   },
-  base: "/admin/",
+  base: "/",
   resolve: {
     alias: {
       // eslint-disable-next-line no-undef

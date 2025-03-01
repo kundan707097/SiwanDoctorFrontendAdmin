@@ -267,7 +267,7 @@ export default function UpdateUser() {
                 src={
                   userDetails?.image
                     ? `${imageBaseURL}/${userDetails?.image}`
-                    : "/admin/profilePicturePlaceholder.png"
+                    : "/profilePicturePlaceholder.png"
                 }
               />
               {profilePicture && (

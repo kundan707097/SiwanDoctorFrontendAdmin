@@ -291,7 +291,7 @@ export default function AddDoctor() {
                 src={
                   profilePicture
                     ? URL.createObjectURL(profilePicture)
-                    : "/admin/profilePicturePlaceholder.png"
+                    : /profilePicturePlaceholder.png"
                 }
               />
               {profilePicture && (
