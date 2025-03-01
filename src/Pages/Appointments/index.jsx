@@ -24,7 +24,6 @@ import getCancellationStatusBadge from "../../Hooks/CancellationReqBadge";
 import AddNewAppointment from "./AddNewAppointment";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "../../Components/Pagination";
-import useDebounce from "../../Hooks/UseDebounce";
 import ErrorPage from "../../Components/ErrorPage";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
@@ -33,6 +32,7 @@ import { RefreshCwIcon } from "lucide-react";
 import t from "../../Controllers/configs";
 import DateRangeCalender from "../../Components/DateRangeCalender";
 import { daysBack } from "../../Controllers/dateConfig";
+import useDebounce from "../../Hooks/UseDebounce";
 
 const getPageIndices = (currentPage, itemsPerPage) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -50,7 +50,6 @@ export default function Appointments() {
   const [page, setPage] = useState(1);
   const boxRef = useRef(null);
   const [searchQuery, setsearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const [statusFilters, setStatusFilters] = useState([]); // Track status filters
   const { startIndex, endIndex } = getPageIndices(page, 50);
   const { hasPermission } = useHasPermission();
@@ -59,7 +58,7 @@ export default function Appointments() {
     startDate: sevenDaysBack,
     endDate: today,
   });
-
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const start_date = moment(dateRange.startDate).format("YYYY-MM-DD");
   const end_date = moment(dateRange.endDate).format("YYYY-MM-DD");
 
