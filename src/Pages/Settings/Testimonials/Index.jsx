@@ -18,7 +18,7 @@ import useSearchFilter from "../../../Hooks/UseSearchFilter";
 import DynamicTable from "../../../Components/DataTable";
 import { GET } from "../../../Controllers/ApiControllers";
 import admin from "../../../Controllers/admin";
-import DeleteSocial from "./delete.JSX";
+import DeleteSocial from "./Delete";
 import AddTestimonial from "./Add";
 import UpdateTastimonials from "./Update";
 import useHasPermission from "../../../Hooks/HasPermission";
