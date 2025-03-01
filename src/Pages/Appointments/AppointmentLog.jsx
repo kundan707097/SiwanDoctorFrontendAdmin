@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import getStatusBadge from "../../Hooks/StatusBadge";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "../../Components/Pagination";
-import useDebounce from "../../Hooks/UseDebounce";
+
 import ErrorPage from "../../Components/ErrorPage";
 import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
@@ -29,6 +29,7 @@ import moment from "moment";
 import { RefreshCwIcon } from "lucide-react";
 import DateRangeCalender from "../../Components/DateRangeCalender";
 import { daysBack } from "../../Controllers/dateConfig";
+import useDebounce from "../../Hooks/UseDebounce";
 
 const getPageIndices = (currentPage, itemsPerPage) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -50,6 +51,7 @@ export default function AppointmentStatusLog() {
   const { startIndex, endIndex } = getPageIndices(page, 50);
   const { hasPermission } = useHasPermission();
   const queryClient = useQueryClient();
+
 
   const [dateRange, setdateRange] = useState({
     startDate: sevenDaysBack,
