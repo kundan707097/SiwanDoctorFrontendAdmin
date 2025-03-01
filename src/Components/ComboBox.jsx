@@ -1,6 +1,5 @@
 ﻿/* eslint-disable react/prop-types */
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useColorMode } from "@chakra-ui/react";
+import { Button, useColorMode } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
 export function ComboboxDemo({
