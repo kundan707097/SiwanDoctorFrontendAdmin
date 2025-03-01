@@ -55,12 +55,9 @@ import Loading from "../../Components/Loading";
 import RatingStars from "../../Hooks/ShowRating";
 import ISDCODEMODAL from "../../Components/IsdModal";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
-import imageBaseURL from "../../Controllers/image";
 import useHasPermission from "../../Hooks/HasPermission";
 import VideoTimeSlotes from "../../Components/VideoTimeSlotes/TimeSlotes";
 import todayDate from "../../Controllers/today";
-import Review from "./Review";
-import DoctAppointments from "./DoctAppoinrtments";
 import NotAuth from "../../Components/NotAuth";
 
 const getSpclizeList = async () => {
