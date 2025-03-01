@@ -22,7 +22,7 @@ import AddTestimonial from "./Add";
 import UpdateTastimonials from "./Update";
 import useHasPermission from "../../../Hooks/HasPermission";
 import NotAuth from "../../../Components/NotAuth";
-import DeleteTestimonial from "./delete";
+import DeleteTestimonial from "./Delete";
 
 export default function Testimonials() {
   const { isOpen, onOpen, onClose } = useDisclosure();
