@@ -32,7 +32,6 @@ import { RefreshCwIcon } from "lucide-react";
 import t from "../../Controllers/configs";
 import DateRangeCalender from "../../Components/DateRangeCalender";
 import { daysBack } from "../../Controllers/dateConfig";
-import useDebounce from "../../Hooks/UseDebounce";
 
 const getPageIndices = (currentPage, itemsPerPage) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -300,3 +299,21 @@ const YourActionButton = ({ onClick, rowData, navigate }) => {
     </Flex>
   );
 };
+
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    // Set a timeout to update the debounced value
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    // Cleanup function to clear the timeout if value or delay changes
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]); // Dependency array
+
+  return debouncedValue || "";
+}
