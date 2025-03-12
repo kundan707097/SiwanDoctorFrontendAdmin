@@ -157,7 +157,7 @@ export default function UpdateDepartmentModel({ isOpen, onClose, data }) {
                 </Button>
               </Flex>
             )}
-            {data?.image && (
+       
               <Box
                 mt={5}
                 p={4}
@@ -209,7 +209,7 @@ export default function UpdateDepartmentModel({ isOpen, onClose, data }) {
                   </Box>
                 )}
               </Box>
-            )}
+      
           </Box>
         </ModalBody>
         <Divider />

@@ -2,12 +2,14 @@
 import { GET } from "../Controllers/ApiControllers";
 import admin from "../Controllers/admin";
 
-const getData = async () => {
-  const res = await GET(admin.token, `get_prescribe_medicines`);
-  return res.data;
-};
-
-const useMedicineData = () => {
+const useMedicineData = (doctID) => {
+  const getData = async () => {
+    const res = await GET(
+      admin.token,
+      `get_prescribe_medicines_ByDoctorId?doct_id=${doctID}`
+    );
+    return res.data;
+  };
   const {
     isLoading: medicinesLoading,
     data: medicinesData,

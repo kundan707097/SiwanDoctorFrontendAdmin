@@ -25,7 +25,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Skeleton,
   useToast,
   AlertDialog,
   AlertDialogBody,
@@ -47,8 +46,6 @@ import moment from "moment";
 import getStatusBadge from "../../Hooks/StatusBadge";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
-import DynamicTable from "../../Components/DataTable";
-import getCancellationStatusBadge from "../../Hooks/CancellationReqBadge";
 import showToast from "../../Controllers/ShowToast";
 import InvoiceByAppointmentID from "../Invoices/InvoiceByAppointmentID";
 import TransactionByAppID from "../Transaction/TransactionByAppID";
@@ -111,17 +108,6 @@ const handleStatusUpdate = async (data) => {
 };
 const handleAppointmentReject = async (data) => {
   const res = await UPDATE(admin.token, "appointment_reject_and_refund", data);
-  if (res.response !== 200) {
-    throw new Error(res.message);
-  }
-  return res;
-};
-const handleCancelAppointment = async (data) => {
-  const res = await UPDATE(
-    admin.token,
-    "appointment_cancellation_and_refund",
-    data
-  );
   if (res.response !== 200) {
     throw new Error(res.message);
   }
@@ -202,7 +188,11 @@ export default function UpdateAppointment() {
             Appointment Details #{id}
           </Heading>
           {getStatusBadge(appointmntData?.status)}
-          <Badge colorScheme="gray" p={"5px"} px={5}>
+          <Badge
+            colorScheme={appointmntData.source === "Web" ? "purple" : "blue"}
+            p={"5px"}
+            px={5}
+          >
             Source - {appointmntData.source}
           </Badge>
           {appointmntData.type === "Video Consultant"
@@ -752,22 +742,6 @@ export default function UpdateAppointment() {
                   </Box>{" "}
                 </Flex>
               </form>
-
-              {/* cancellation req */}
-              <Tabs mt={5} colorScheme={"red"}>
-                <TabList>
-                  <Tab fontSize={18} fontWeight={600}>
-                    Cancellation Req By Patient
-                  </Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel px={0}>
-                    <CancellationReq
-                      current_req={appointmntData.current_cancel_req_status}
-                    />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
             </Box>
           </TabPanel>
           {hasPermission("PRESCRIPTION_VIEW") && (
@@ -818,174 +792,6 @@ export default function UpdateAppointment() {
     </Box>
   );
 }
-
-function getNextStates(currentState) {
-  switch (currentState) {
-    case "Initiated":
-      return ["Processing", "Rejected", "Approved"];
-    case "Processing":
-      return ["Rejected", "Approved"];
-    case "Rejected":
-      return [];
-    case "Approved":
-      return [];
-    default:
-      return [];
-  }
-}
-
-const CancellationReq = ({ current_req }) => {
-  const { id } = useParams();
-  const toast = useToast();
-  const queryClient = useQueryClient();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [updatedStatus, setupdatedStatus] = useState();
-
-  const getData = async () => {
-    const res = await GET(
-      admin.token,
-      `get_appointment_cancel_req/appointment/${id}`
-    );
-    const rearrangedArray = res?.data.map((item) => {
-      const { status, notes, created_at } = item;
-      return {
-        // id: id,
-        // appointment_id,
-        Status: getCancellationStatusBadge(status),
-        notes: notes,
-        "Created At": moment(created_at).format("DD MMM YY hh:mm A"),
-      };
-    });
-
-    return rearrangedArray.sort((a, b) => b.id - a.id);
-  };
-  const { isLoading, data } = useQuery({
-    queryKey: ["appointment-canc-req", id],
-    queryFn: getData,
-  });
-
-  const updateReqStatus = async (status) => {
-    let data = {
-      appointment_id: id,
-      status: status,
-    };
-    try {
-      const res = await UPDATE(admin.token, "appointment_cancellation", data);
-      if (res.response === 200) {
-        showToast(toast, "success", "Updated!");
-      } else {
-        showToast(toast, "error", res.message);
-      }
-    } catch (error) {
-      showToast(toast, "error", JSON.stringify(error));
-    }
-  };
-
-  const mutation = useMutation({
-    mutationFn: async (status) => {
-      updateReqStatus(status);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["appointment-canc-req", id]);
-      queryClient.invalidateQueries("appointment", id);
-      queryClient.invalidateQueries("appointments");
-      queryClient.invalidateQueries("main-appointments");
-    },
-  });
-
-  if (mutation.isLoading) return <Loading />;
-  return (
-    <Box>
-      {isLoading || !data ? (
-        <Box>
-          <Flex mb={5} justify={"space-between"}>
-            <Skeleton w={400} h={8} />
-            <Skeleton w={200} h={8} />
-          </Flex>
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-          <Skeleton h={10} w={"100%"} mt={2} />
-        </Box>
-      ) : (
-        <Box>
-          {data.length ? (
-            <Flex mb={5} justify={"space-between"} align={"center"}>
-              <FormControl size={"sm"}>
-                <FormLabel
-                  fontSize={"sm"}
-                  mb={0}
-                  color={useColorModeValue("gray.600", "gray.300")}
-                >
-                  Update Request Status
-                </FormLabel>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                    bg={"transparent"}
-                    w={"300px"}
-                    textAlign={"left"}
-                    pl={0}
-                    pt={0}
-                    h={8}
-                    _hover={{
-                      bg: "transparent",
-                    }}
-                    _focus={{
-                      bg: "transparent",
-                    }}
-                    borderBottom={"1px solid"}
-                    borderBottomRadius={0}
-                    borderColor={useColorModeValue("gray.200", "gray.600")}
-                  >
-                    {getCancellationStatusBadge(current_req)}
-                  </MenuButton>
-                  {getNextStates(current_req)?.length ? (
-                    <MenuList>
-                      {getNextStates(current_req)?.map((option) => (
-                        <MenuItem
-                          key={option}
-                          onClick={() => {
-                            onOpen();
-                            setupdatedStatus(option);
-                            // if (option === "Approved") {
-                            //   return;
-                            // } else {
-                            //   mutation.mutate(option);
-                            // }
-                          }}
-                        >
-                          <Box display="flex" alignItems="center">
-                            {getCancellationStatusBadge(option)}
-                          </Box>
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  ) : null}
-                </Menu>
-              </FormControl>
-            </Flex>
-          ) : null}
-          <DynamicTable minPad={"8px 10px"} data={data} />
-        </Box>
-      )}
-
-      <HandelUpdateCancellation
-        isOpen={isOpen}
-        onClose={onClose}
-        id={id}
-        type={updatedStatus}
-      />
-    </Box>
-  );
-};
 
 const HandlePendingStatus = ({ isOpen, onClose, id, appData }) => {
   const queryClient = useQueryClient();
@@ -1043,101 +849,6 @@ const HandlePendingStatus = ({ isOpen, onClose, id, appData }) => {
               size={"sm"}
             >
               Reject
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
-  );
-};
-
-const HandelUpdateCancellation = ({ isOpen, onClose, id, type }) => {
-  const queryClient = useQueryClient();
-  const toast = useToast();
-
-  const updateReqStatus = async (status) => {
-    let data = {
-      appointment_id: id,
-      status: status,
-    };
-    try {
-      const res = await UPDATE(admin.token, "appointment_cancellation", data);
-      if (res.response === 200) {
-        showToast(toast, "success", "Updated!");
-      } else {
-        showToast(toast, "error", res.message);
-      }
-    } catch (error) {
-      showToast(toast, "error", JSON.stringify(error));
-    }
-  };
-
-  const mutationApprove = useMutation({
-    mutationFn: async (data) => {
-      await handleCancelAppointment(data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
-      queryClient.invalidateQueries("main-appointments");
-      queryClient.invalidateQueries(["appointment-canc-req", id]);
-      queryClient.invalidateQueries("appointment", id);
-      onClose();
-    },
-    onError: (error) => {
-      showToast(toast, "error", error.message);
-      onClose();
-    },
-  });
-
-  const mutationRest = useMutation({
-    mutationFn: async (data) => {
-      await updateReqStatus(data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
-      queryClient.invalidateQueries("main-appointments");
-      queryClient.invalidateQueries(["appointment-canc-req", id]);
-      queryClient.invalidateQueries("appointment", id);
-      onClose();
-    },
-    onError: (error) => {
-      showToast(toast, "error", error.message);
-      onClose();
-    },
-  });
-
-  if (mutationApprove.isPending || mutationRest.isPending) return <Loading />;
-
-  return (
-    <AlertDialog isOpen={isOpen} onClose={onClose} isCentered>
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="md" fontWeight="bold">
-            {type} Request , id : {id}
-          </AlertDialogHeader>
-
-          <AlertDialogBody>
-            Are you sure? update cancellation status to {type}
-          </AlertDialogBody>
-
-          <AlertDialogFooter>
-            <Button onClick={onClose} size={"sm"}>
-              Cancel
-            </Button>
-            <Button
-              colorScheme="red"
-              onClick={() => {
-                if (type === "Approved") {
-                  let data = { appointment_id: id, status: "Approved" };
-                  mutationApprove.mutate(data);
-                } else {
-                  mutationRest.mutate(type);
-                }
-              }}
-              ml={3}
-              size={"sm"}
-            >
-              {type} Cancellation Request
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

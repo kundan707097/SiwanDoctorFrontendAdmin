@@ -36,12 +36,15 @@ function PrescriptionByAppID({ appointmentID, appointmntData }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const getData = async () => {
-    const res = await GET(
-      admin.token,
-      `get_prescription/appointment/${appointmentID}`
-    );
-
-    return res.data;
+    try {
+      const res = await GET(
+        admin.token,
+        `get_prescription_by_prescriptionId?prescriptionId=${appointmentID}`
+      );
+      return res.data || [];
+    } catch (error) {
+      return [];
+    }
   };
 
   const { isLoading, data, error } = useQuery({
@@ -50,6 +53,7 @@ function PrescriptionByAppID({ appointmentID, appointmntData }) {
   });
 
   const { handleSearchChange, filteredData } = useSearchFilter(data);
+
   if (error) {
     return <Text color="red.500">Error loading data</Text>;
   }
@@ -103,7 +107,7 @@ function PrescriptionByAppID({ appointmentID, appointmntData }) {
                 colorScheme="blue"
                 size={"sm"}
                 as={RouterLink}
-                to={`/add-prescription/?appointmentID=${appointmentID}&patientID=${appointmntData?.patient_id}`}
+                to={`/add-prescription/?appointmentID=${appointmentID}&patientID=${appointmntData?.patient_id}&doctID=${appointmntData?.doct_id}`}
               >
                 New Prescription
               </Button>

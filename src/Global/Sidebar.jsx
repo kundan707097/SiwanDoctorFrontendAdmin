@@ -45,11 +45,11 @@ const LinkItems = [
   //   icon: BiCheckShield,
   //   permission: "CHECKIN_VIEW",
   // },
-  // {
-  //   name: "Appointments",
-  //   icon: RiStethoscopeFill,
-  //   permission: "APPOINTMENT_VIEW",
-  // },
+  {
+    name: "Appointments",
+    icon: RiStethoscopeFill,
+    permission: "APPOINTMENT_VIEW",
+  },
   // {
   //   name: "Appointment-Status-Log",
   //   icon: RiStethoscopeFill,

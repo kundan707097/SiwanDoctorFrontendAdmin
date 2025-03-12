@@ -1,26 +1,23 @@
 ﻿/* eslint-disable react/prop-types */
 import {
+  Avatar,
   Badge,
   Box,
   Button,
   Checkbox,
   CheckboxGroup,
+  Divider,
   Flex,
-  IconButton,
-  Input,
+  Grid, Input,
   Skeleton,
-  theme,
-  useDisclosure,
-  useToast,
+  Text, useDisclosure,
+  useToast
 } from "@chakra-ui/react";
-import { FiEdit } from "react-icons/fi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import DynamicTable from "../../Components/DataTable";
 import { GET } from "../../Controllers/ApiControllers";
 import admin from "../../Controllers/admin";
 import { useNavigate } from "react-router-dom";
 import getStatusBadge from "../../Hooks/StatusBadge";
-import getCancellationStatusBadge from "../../Hooks/CancellationReqBadge";
 import AddNewAppointment from "./AddNewAppointment";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "../../Components/Pagination";
@@ -29,17 +26,14 @@ import useHasPermission from "../../Hooks/HasPermission";
 import NotAuth from "../../Components/NotAuth";
 import moment from "moment";
 import { RefreshCwIcon } from "lucide-react";
-import t from "../../Controllers/configs";
 import DateRangeCalender from "../../Components/DateRangeCalender";
-import { daysBack } from "../../Controllers/dateConfig";
+import getStatusColor from "../../Hooks/GetStatusColor";
 
 const getPageIndices = (currentPage, itemsPerPage) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   let endIndex = startIndex + itemsPerPage - 1;
   return { startIndex, endIndex };
 };
-const sevenDaysBack = moment().subtract(daysBack, "days").format("YYYY-MM-DD");
-const today = moment().format("YYYY-MM-DD");
 
 export default function Appointments() {
   const navigate = useNavigate();
@@ -54,12 +48,16 @@ export default function Appointments() {
   const { hasPermission } = useHasPermission();
   const queryClient = useQueryClient();
   const [dateRange, setdateRange] = useState({
-    startDate: sevenDaysBack,
-    endDate: today,
+    startDate: null,
+    endDate: null,
   });
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
-  const start_date = moment(dateRange.startDate).format("YYYY-MM-DD");
-  const end_date = moment(dateRange.endDate).format("YYYY-MM-DD");
+  const start_date = dateRange.startDate
+    ? moment(dateRange.startDate).format("YYYY-MM-DD")
+    : "";
+  const end_date = dateRange.endDate
+    ? moment(dateRange.endDate).format("YYYY-MM-DD")
+    : "";
 
   const handleStatusChange = (selectedStatuses) => {
     setStatusFilters(selectedStatuses); // Update the state when checkboxes change
@@ -68,76 +66,22 @@ export default function Appointments() {
   const getData = async () => {
     const url =
       admin.role.name === "Doctor"
-        ? `get_appointments/doctor_id/page?start=${startIndex}&end=${endIndex}&doctor_id=${
+        ? `GetAll_appointment/doctor_id/page?start=${startIndex}&end=${endIndex}&doctor_id=${
             admin.id
           }&search=${debouncedSearchQuery}&start_date=${start_date}&end_date=${end_date}&status=${statusFilters.join(
             ", "
           )}`
-        : `get_appointments/page?start=${startIndex}&end=${endIndex}&search=${debouncedSearchQuery}&start_date=${start_date}&end_date=${end_date}&status=${statusFilters.join(
+        : `GetAll_appointment?start=${startIndex}&end=${endIndex}&search=${debouncedSearchQuery}&start_date=${start_date}&end_date=${end_date}&status=${statusFilters.join(
             ", "
           )}`;
-    await t();
+    console.log(url);
     const res = await GET(admin.token, url);
-    const rearrangedArray = res?.data.map((item) => {
-      const {
-        id,
-        patient_id,
-        status,
-        date,
-        time_slots,
-        type,
-        payment_status,
-        current_cancel_req_status,
-        patient_f_name,
-        patient_l_name,
-        patient_phone,
-        doct_f_name,
-        doct_l_name,
-        doct_image,
-        source,
-      } = item;
-
-      return {
-        id: id,
-        image: doct_image,
-        Doctor: `${doct_f_name} ${doct_l_name}`,
-        Patient: `${patient_f_name} ${patient_l_name} - #${patient_id}`,
-        phone: patient_phone,
-        Status: getStatusBadge(status),
-        Date: moment(date).format("DD MMM YYYY"),
-        "Time Slots": moment(time_slots, "HH:mm:ss").format("hh:mm A"),
-        Type:
-          type === "Emergency" ? (
-            <Badge colorScheme="red">{type}</Badge>
-          ) : (
-            <Badge colorScheme="green">{type}</Badge>
-          ),
-        "Payment Status":
-          payment_status === "Paid" ? (
-            <Badge colorScheme="green">{payment_status}</Badge>
-          ) : payment_status === "Refunded" ? (
-            <Badge colorScheme="blue">{payment_status}</Badge>
-          ) : (
-            <Badge colorScheme="red">{"Not Paid"}</Badge>
-          ),
-        "Cancellation Status": getCancellationStatusBadge(
-          current_cancel_req_status
-        ),
-        source,
-        filterStatus: status,
-        current_cancel_req_status: current_cancel_req_status,
-      };
-    });
-
-    return {
-      data: rearrangedArray,
-      total_record: res.total_record,
-    };
+    return res.data;
   };
 
   const { isLoading, data, error, isFetching, isRefetching } = useQuery({
     queryKey: [
-      "appointments",
+      "appointments-page",
       page,
       debouncedSearchQuery,
       statusFilters,
@@ -149,7 +93,7 @@ export default function Appointments() {
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
-  const totalPage = Math.ceil(data?.total_record / 50);
+  const totalPage = Math.ceil(1000 / 50);
 
   useEffect(() => {
     if (boxRef.current) {
@@ -186,9 +130,21 @@ export default function Appointments() {
             <Skeleton w={200} h={8} />
           </Flex>
           {/* Loading skeletons */}
-          {[...Array(10)].map((_, index) => (
-            <Skeleton key={index} h={10} w={"100%"} mt={2} />
-          ))}
+          <Grid
+            templateColumns={{
+              base: "1fr",
+              md: "repeat(2, 1fr)",
+              xl: "repeat(3, 1fr)",
+              "2xl": "repeat(4, 1fr)",
+            }}
+            gap={{ base: 4, md: 4, xl: 8 }}
+            p={4}
+          >
+            {" "}
+            {[...Array(16)].map((_, index) => (
+              <Skeleton key={index} h={32} mt={2} borderRadius={6} />
+            ))}
+          </Grid>
         </Box>
       ) : (
         <Box>
@@ -237,7 +193,6 @@ export default function Appointments() {
                 <Checkbox value="Pending">Pending</Checkbox>
                 <Checkbox value="Cancelled">Cancelled</Checkbox>
                 <Checkbox value="Rejected">Rejected</Checkbox>
-                <Checkbox value="Cancellation">Cancellation Initiated</Checkbox>
               </Flex>
             </CheckboxGroup>{" "}
             <Button
@@ -255,14 +210,119 @@ export default function Appointments() {
               Refresh Table
             </Button>
           </Flex>
+          <Box>
+            <Grid
+              templateColumns={{
+                base: "1fr",
+                md: "repeat(2, 1fr)",
+                xl: "repeat(3, 1fr)",
+                "2xl": "repeat(4, 1fr)",
+              }}
+              gap={{ base: 4, md: 4, xl: 8 }}
+              p={4}
+            >
+              {data?.map((appointment) => (
+                <Box
+                  key={appointment.id}
+                  p={4}
+                  borderRadius="md"
+                  boxShadow="lg"
+                  border={"1px solid"}
+                  borderColor={getStatusColor(appointment.status)}
+                  cursor={"pointer"}
+                  transition={"transform 0.2s ease-in-out"}
+                  _hover={{
+                    transform: "translateY(-2px)",
+                    transition: "transform 0.2s ease-in-out",
+                    boxShadow: "xl",
+                  }}
+                  onClick={() => navigate(`/appointment/${appointment.id}`)}
+                >
+                  <Flex gap={4}>
+                    <Avatar src={appointment.doct_image} />{" "}
+                    <Box>
+                      {" "}
+                      <Text fontWeight={"600"}>
+                        Doctor: {appointment.doct_f_name}{" "}
+                        {appointment.doct_l_name}
+                      </Text>{" "}
+                      <Text>
+                        Patient: {appointment.patient_f_name}{" "}
+                        {appointment.patient_l_name} #{appointment.patient_id}
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Divider my={3} />
 
-          <DynamicTable
-            minPad={"1px 10px"}
-            data={data?.data}
-            onActionClick={
-              <YourActionButton onClick={() => {}} navigate={navigate} />
-            }
-          />
+                  <Flex justify={"space-between"} align={"center"}>
+                    {" "}
+                    <Text
+                      fontSize={"sm"}
+                      fontWeight={"600"}
+                      color={"green.500"}
+                    >
+                      Date: {appointment.date}
+                    </Text>
+                    <Text
+                      fontSize={"sm"}
+                      fontWeight={"600"}
+                      color={"green.500"}
+                    >
+                      Time: {appointment.time_slots}
+                    </Text>
+                  </Flex>
+                  <Flex justify={"space-between"} align={"center"} mt={2}>
+                    {" "}
+                    <Text>
+                      Type:{" "}
+                      {appointment.type === "Emergency" ? (
+                        <Badge colorScheme="red" py={"5px"}>
+                          {appointment.type}
+                        </Badge>
+                      ) : appointment.type === "Video Consultant" ? (
+                        <Badge colorScheme="purple" py={"5px"}>
+                          {appointment.type}
+                        </Badge>
+                      ) : (
+                        <Badge colorScheme="green" py={"5px"}>
+                          {appointment.type}
+                        </Badge>
+                      )}
+                    </Text>
+                    <Text>Status: {getStatusBadge(appointment.status)}</Text>
+                  </Flex>
+                  <Flex justify={"space-between"} align={"center"} mt={2}>
+                    {" "}
+                    <Text fontSize={"sm"}>
+                      Payment :{" "}
+                      {appointment?.payment_status === "Paid" ? (
+                        <Badge colorScheme="green">
+                          {appointment.payment_status}
+                        </Badge>
+                      ) : appointment.payment_status === "Refunded" ? (
+                        <Badge colorScheme="blue">
+                          {appointment.payment_status}
+                        </Badge>
+                      ) : (
+                        <Badge colorScheme="red">{"Not Paid"}</Badge>
+                      )}
+                    </Text>
+                    <Text fontSize={"sm"}>
+                      Source:{" "}
+                      <Badge
+                        colorScheme={
+                          appointment.source === "Web" ? "purple" : "blue"
+                        }
+                      >
+                        {appointment.source}
+                      </Badge>
+                    </Text>
+                  </Flex>
+                </Box>
+              ))}
+            </Grid>
+            ;
+          </Box>
         </Box>
       )}
 
@@ -279,26 +339,6 @@ export default function Appointments() {
     </Box>
   );
 }
-
-const YourActionButton = ({ onClick, rowData, navigate }) => {
-  const { hasPermission } = useHasPermission();
-  return (
-    <Flex justify={"center"}>
-      {hasPermission("APPOINTMENT_UPDATE") && (
-        <IconButton
-          size={"sm"}
-          variant={"ghost"}
-          _hover={{ background: "none" }}
-          onClick={() => {
-            onClick(rowData);
-            navigate(`/appointment/${rowData.id}`);
-          }}
-          icon={<FiEdit fontSize={18} color={theme.colors.blue[500]} />}
-        />
-      )}
-    </Flex>
-  );
-};
 
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);

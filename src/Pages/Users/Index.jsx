@@ -7,8 +7,9 @@ import {
   Input,
   Radio,
   RadioGroup,
-  Skeleton, theme,
-  useToast
+  Skeleton,
+  theme,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
@@ -73,18 +74,23 @@ export default function Users() {
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const { startIndex, endIndex } = getPageIndices(page, ITEMS_PER_PAGE);
   const boxRef = useRef(null);
-  const { rolesData, rolesLoading } = useRolesData();
+  // const { rolesData, rolesLoading } = useRolesData();
   const [selectedRole, setSelectedRole] = useState("");
 
   const getData = async () => {
     const res = await GET(
       admin.token,
-      `get_users/page?start=${startIndex}&end=${endIndex}&search=${debouncedSearchQuery}&role_id=${selectedRole}`
+      `GetAll_User?start=${startIndex}&end=${endIndex}&search=${debouncedSearchQuery}&role_id=${selectedRole}`
     );
-    return {
-      data: res.data,
-      total_record: res.total_record,
-    };
+
+    if (res.total_record) {
+      return {
+        data: res.data,
+        total_record: res.total_record,
+      };
+    } else {
+      return res.data;
+    }
   };
 
   const { isLoading, data, error } = useQuery({
@@ -123,9 +129,12 @@ export default function Users() {
 
   if (!hasPermission("USER_VIEW")) return <NotAuth />;
 
+
+
+  console.log(data)
   return (
     <Box>
-      {isLoading || !data || rolesLoading ? (
+      {isLoading || !data  ? (
         <Box>
           <Flex mb={5} justify={"space-between"}>
             <Skeleton w={400} h={8} />
@@ -170,17 +179,17 @@ export default function Users() {
             <RadioGroup onChange={setSelectedRole} value={selectedRole}>
               <Flex direction="row" gap={4} wrap="wrap">
                 <Radio value={""}>All</Radio>
-                {rolesData.map((role) => (
+                {/* {rolesData?.map((role) => (
                   <Radio key={role.id} value={role.id.toString()}>
                     {role.name}
                   </Radio>
-                ))}
+                ))} */}
               </Flex>
             </RadioGroup>
           </Box>
           <DynamicTable
             minPad={"1px 20px"}
-            data={transformData(data.data)}
+            data={transformData(data)}
             onActionClick={
               <YourActionButton
                 onClick={handleActionClick}

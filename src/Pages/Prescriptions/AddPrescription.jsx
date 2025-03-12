@@ -57,10 +57,10 @@ function AddPrescription() {
   const [searchParams] = useSearchParams();
   const appointment_id = searchParams.get("appointmentID");
   const patient_id = searchParams.get("patientID");
+  const doct_id = searchParams.get("doctID");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { medicinesData } = useMedicineData();
+  const { medicinesData } = useMedicineData(doct_id);
 
   const [medicines, setMedicines] = useState([
     {
